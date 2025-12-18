@@ -17,46 +17,59 @@ class GlassCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    // BorderRadius constant pour harmoniser
+    final borderRadius = BorderRadius.circular(24);
+
     return ClipRRect(
-      borderRadius: BorderRadius.circular(30), // Arrondi plus prononcé style Apple
+      borderRadius: borderRadius,
       child: BackdropFilter(
-        filter: ImageFilter.blur(sigmaX: 25, sigmaY: 25), // Blur intense
-        child: Stack(
-          children: [
-            // 1. Fond semi-transparent
-            Container(
-              width: width,
-              height: height,
-              padding: padding,
-              decoration: BoxDecoration(
-                color: Colors.white.withOpacity(0.08), // Base très légère
-                borderRadius: BorderRadius.circular(30),
-                gradient: LinearGradient(
-                  begin: Alignment.topLeft,
-                  end: Alignment.bottomRight,
-                  colors: [
-                    Colors.white.withOpacity(0.15), // Reflet haut gauche
-                    Colors.white.withOpacity(0.02), // Quasi transparent bas droite
-                  ],
-                ),
-              ),
-              child: child,
+        filter: ImageFilter.blur(sigmaX: 20, sigmaY: 20), // Flou "Frosted"
+        child: Container(
+          width: width,
+          height: height,
+          decoration: BoxDecoration(
+            borderRadius: borderRadius,
+            // 1. Le fond du verre (très subtil)
+            color: Colors.white.withOpacity(0.03),
+            // 2. Un gradient de surface (reflet global)
+            gradient: LinearGradient(
+              begin: Alignment.topLeft,
+              end: Alignment.bottomRight,
+              colors: [
+                Colors.white.withOpacity(0.05),
+                Colors.white.withOpacity(0.01),
+              ],
             ),
-            
-            // 2. Bordure dégradée (Simulée)
-            Positioned.fill(
-              child: Container(
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(30),
-                  border: Border.all(
-                    color: Colors.white.withOpacity(0.1), // Bordure fine uniforme
-                    width: 1,
+          ),
+          child: Stack(
+            children: [
+              // 3. La Bordure "Lumière" (Rim Lighting)
+              // On utilise un Container interne avec un gradient de bordure
+              Positioned.fill(
+                child: Container(
+                  decoration: BoxDecoration(
+                    borderRadius: borderRadius,
+                    border: Border.all(color: Colors.transparent), // Hack structurel
+                    gradient: LinearGradient(
+                      begin: Alignment.topLeft,
+                      end: Alignment.bottomRight,
+                      stops: const [0.0, 0.4, 1.0],
+                      colors: [
+                        Colors.white.withOpacity(0.3), // Lumière vive coin haut gauche
+                        Colors.white.withOpacity(0.05), // Transition
+                        Colors.white.withOpacity(0.0),  // Ombre totale coin bas droite
+                      ],
+                    ),
                   ),
-                  // Le gradient de "reflet" est déjà sur le fond, pas besoin de complexifier la bordure pour l'instant
                 ),
               ),
-            ),
-          ],
+              // 4. Le contenu réel
+              Padding(
+                padding: padding,
+                child: child,
+              ),
+            ],
+          ),
         ),
       ),
     );
