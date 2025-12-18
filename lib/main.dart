@@ -1,11 +1,17 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:google_fonts/google_fonts.dart';
+import 'package:hive_flutter/hive_flutter.dart';
+import 'core/app_colors.dart';
+import 'data/models/ai_usage_log.dart';
 import 'features/dashboard/dashboard_screen.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   
+  await Hive.initFlutter();
+  Hive.registerAdapter(AiUsageLogAdapter());
+  await Hive.openBox<AiUsageLog>('ai_usage_logs');
+
   runApp(const ProviderScope(child: EcoAiTrackerApp()));
 }
 
@@ -20,11 +26,12 @@ class EcoAiTrackerApp extends StatelessWidget {
       themeMode: ThemeMode.dark,
       darkTheme: ThemeData(
         brightness: Brightness.dark,
-        scaffoldBackgroundColor: const Color(0xFF0A0A0A),
+        scaffoldBackgroundColor: AppColors.background,
         useMaterial3: true,
-        textTheme: GoogleFonts.interTextTheme(ThemeData.dark().textTheme).apply(
-          bodyColor: Colors.white.withOpacity(0.9),
-          displayColor: Colors.white,
+        fontFamily: 'Inter',
+        textTheme: Theme.of(context).textTheme.apply(
+          bodyColor: AppColors.textHighEmphasis,
+          displayColor: AppColors.textHighEmphasis,
         ),
       ),
       home: const DashboardScreen(),

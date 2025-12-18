@@ -64,13 +64,14 @@ class _SettingsScreenState extends State<SettingsScreen> {
           icon: const Icon(Icons.arrow_back_ios_new, color: Colors.white, size: 20),
           onPressed: () => Navigator.pop(context),
         ),
-        title: Text(
+        title: const Text(
           'CONFIGURATION',
-          style: GoogleFonts.spaceGrotesk(
+          style: TextStyle(
             color: AppColors.biolumCyan,
             fontSize: 14,
             fontWeight: FontWeight.bold,
             letterSpacing: 2.0,
+            fontFamily: 'SpaceGrotesk',
           ),
         ),
       ),
@@ -98,12 +99,13 @@ class _SettingsScreenState extends State<SettingsScreen> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text(
+                  const Text(
                     'API Credentials',
-                    style: GoogleFonts.spaceGrotesk(
+                    style: TextStyle(
                       color: AppColors.textHighEmphasis,
                       fontSize: 28,
                       fontWeight: FontWeight.bold,
+                      fontFamily: 'SpaceGrotesk',
                     ),
                   ).animate().fade().slideY(begin: 0.1, end: 0),
                   
@@ -161,11 +163,12 @@ class _SettingsScreenState extends State<SettingsScreen> {
                         ),
                         elevation: 0,
                       ),
-                      child: Text(
+                      child: const Text(
                         'SAVE & INITIALIZE',
-                        style: GoogleFonts.spaceGrotesk(
+                        style: TextStyle(
                           fontWeight: FontWeight.bold,
                           letterSpacing: 2,
+                          fontFamily: 'SpaceGrotesk',
                         ),
                       ),
                     ),
@@ -185,11 +188,12 @@ class _SettingsScreenState extends State<SettingsScreen> {
       children: [
         Text(
           label,
-          style: GoogleFonts.spaceGrotesk(
+          style: TextStyle(
             color: accent,
             fontSize: 10,
             fontWeight: FontWeight.bold,
             letterSpacing: 1.5,
+            fontFamily: 'SpaceGrotesk',
           ),
         ),
         const SizedBox(height: 12),
