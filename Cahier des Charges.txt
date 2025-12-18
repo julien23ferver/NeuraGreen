@@ -1,0 +1,104 @@
+Voici la version consolidée et définitive de ton cahier des charges. J'ai fusionné la rigueur technique (Offline-First, coûts financiers) avec ta direction artistique "Liquid Glass" pour en faire un document de référence prêt pour le développement.
+
+Eco‑AI Tracker — Cahier des charges (v2.0)
+1. Vision et Positionnement
+Eco‑AI Tracker est un tableau de bord analytique mobile (iOS/Android) mesurant l'empreinte environnementale et financière de l'usage des LLMs.
+
+Concept clé : Rendre visible l'invisible (infrastructure, consommation, impact) via une interface "instrument de mesure scientifique".
+
+Engagement : Privacy-first (zéro accès au contenu), Offline-first, Transparence totale des calculs.
+
+2. Architecture Technique
+2.1 Stack Mobile & Stratégie
+Framework : Flutter (Dart) pour la maîtrise parfaite du rendu graphique (Shaders, Blurs).
+
+Approche : Offline First. L'application est pleinement fonctionnelle sans réseau pour la consultation d'historique.
+
+Base de données locale : Hive ou SQLite (Drift) pour stocker l'historique des requêtes et les caches de calculs.
+
+Backend (Optionnel) : Proxy léger (Go/Node.js) uniquement si nécessaire pour l'anonymisation des appels API, sinon appels directs sécurisés depuis le mobile.
+
+2.2 Sécurité (Critique)
+Stockage des clés : Chiffrement fort via iOS Keychain et Android Keystore.
+
+Transmission : TLS 1.3 strict.
+
+Scope API : Lecture seule (endpoints Usage et Billing uniquement).
+
+3. Acquisition de Données (Normalisation)
+L'app interroge les endpoints suivants pour consolider un modèle de données unifié :
+
+OpenAI : /usage (Tokens total/prompt/completion).
+
+Google Gemini : API Usage (Token count, compute time).
+
+Mistral / Anthropic : Endpoints Billing/Usage respectifs.
+
+Métadonnées stockées : Provider, Model ID, Tokens (in/out), Timestamp, Coût financier (récupéré ou calculé).
+
+4. Moteurs de Calcul
+4.1 Algorithme Écologique
+Énergie (kWh) : (Tokens / 1000) × coeff_modèle (basé sur la littérature scientifique).
+
+Eau (L) : Énergie × coeff_water_usage_effectiveness (WUE) (Affichage : équivalent bouteilles).
+
+CO₂ (g) : Énergie × intensité_carbone_régionale (Affichage : équivalent arbres/an).
+
+4.2 Algorithme Financier (Nouveau)
+Calcul parallèle du coût en $USD pour corréler "Économie financière" et "Écologie".
+
+Preuve par l'argent : démontrer que les modèles sobres (moins de CO2) sont aussi les moins chers.
+
+5. Direction Artistique & UI/UX : "Liquid Glass"
+L'interface doit évoquer la lucidité numérique. Pas de gamification enfantine, mais une précision d'instrument de bord.
+
+5.1 Langage Visuel
+Matériaux : Surfaces translucides, frosted glass (flou contrôlé), reflets subtils.
+
+Profondeur : Superposition de calques (Layers) plutôt que des ombres portées lourdes.
+
+Palette :
+
+Fond : Noir profond ou Anthracite mat (Absence de lumière = économie d'énergie OLED).
+
+Panneaux : Verre (Opacité 10-20%).
+
+Accents Data : Vert pâle, Cyan, Bleu glacier (froid, clinique, propre).
+
+Typographie : Inter, SF Pro ou Space Grotesk. Chiffres en mode tabulaire (monospaced) pour l'alignement parfait.
+
+5.2 Composants Clés
+Jauges Organiques : Cercles ou arcs à remplissage progressif avec gradients légers. Pas de mouvements brusques.
+
+Cartes Analytiques : "Tuiles de verre" flottantes avec bordures quasi-invisibles. Une carte = Une métrique clé.
+
+Visualisation Abstraite :
+
+Arbres : Silhouettes géométriques minimalistes.
+
+CO₂ : Nuages de points diffus (particules), jamais de cartoon.
+
+Motion Design : Animations lentes (300-600ms), courbes ease-in-out naturelles. Le verre "réagit" aux données.
+
+5.3 Performance UI (Flutter)
+Utilisation optimisée de BackdropFilter et ShaderMask.
+
+Limitation stricte du nombre de layers de flou pour garantir le 60/120 fps.
+
+6. Fonctionnalités d'Engagement
+6.1 Le "Eco-Budget"
+L'utilisateur définit un seuil (ex: "Max 2kg CO2/mois").
+
+Notification locale préventive à 80% et 100% du budget.
+
+6.2 Widgets Natifs (iOS/Android)
+Affichage passif sur l'écran d'accueil du téléphone.
+
+Jauge simple : "Consommation du jour" (Eau/CO2/Prix).
+
+Mise à jour en background périodique (WorkManager/Background Fetch).
+
+6.3 Features "Lucidité"
+Comparateur : Graphique superposant le coût CO2 vs le Coût Financier par modèle.
+
+Timeline : Visualisation des pics d'usage pour identifier les requêtes gourmandes.
