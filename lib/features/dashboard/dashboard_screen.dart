@@ -3,10 +3,9 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import '../../core/app_colors.dart';
+import '../../data/models/openai_invoice_item.dart';
 import '../../presentation/widgets/glass_card.dart';
 import '../settings/settings_screen.dart';
-import '../../core/services/openai_service.dart';
-
 import '../../core/services/openai_service.dart';
 
 class DashboardScreen extends StatefulWidget {
@@ -18,7 +17,14 @@ class DashboardScreen extends StatefulWidget {
 
 class _DashboardScreenState extends State<DashboardScreen> {
   final OpenAIService _openAIService = OpenAIService();
-  Map<String, dynamic>? _usageData;
+  List<OpenAIInvoiceItem> _invoiceItems = [];
+  bool _isLoading = true;
+
+  // Calculated values
+  double get _totalCost => _invoiceItems.fold(0, (sum, item) => sum + item.cost);
+  int get _totalTokens => _invoiceItems.fold(0, (sum, item) => sum + item.quantity);
+  double get _totalCO2Kg => (_totalTokens / 1000) * 0.15; // Placeholder conversion
+  double get _totalWaterL => (_totalTokens / 1000) * 0.5; // Placeholder conversion
 
   @override
   void initState() {
@@ -27,137 +33,117 @@ class _DashboardScreenState extends State<DashboardScreen> {
   }
 
   Future<void> _fetchUsage() async {
+    setState(() => _isLoading = true);
     final data = await _openAIService.getUsage();
-    if (data != null) {
-      print('--- REAL OPENAI USAGE DATA ---');
-      print(data);
+    if (data != null && data['data'] is List) {
+      final items = (data['data'] as List)
+          .map((item) => OpenAIInvoiceItem.fromJson(item))
+          .toList();
       setState(() {
-        _usageData = data;
+        _invoiceItems = items;
       });
     }
+    setState(() => _isLoading = false);
   }
 
   @override
   Widget build(BuildContext context) {
-    // TODO: Use _usageData to display real data
-    
     return Scaffold(
       backgroundColor: AppColors.background,
       body: Stack(
-        clipBehavior: Clip.none, // Empêche les animations d'être coupées au bord
+        clipBehavior: Clip.none,
         children: [
-          // 1. Lumières ambiantes animées
+          // Blobs etc.
           _buildAnimatedBlob(AppColors.biolumCyan, -100, -50, 300, 6.seconds),
           _buildAnimatedBlob(AppColors.plasmaBlue, 250, -100, 400, 8.seconds),
           _buildAnimatedBlob(AppColors.toxicLime, null, -100, 350, 10.seconds, bottom: -50),
 
-          // 2. Contenu principal
           SafeArea(
-            child: SingleChildScrollView( // Supprime l'overflow (barre jaune)
-              padding: const EdgeInsets.symmetric(horizontal: 24.0, vertical: 32.0),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(
-                            'SYSTEM OPTIMAL',
-                            style: GoogleFonts.spaceGrotesk(
-                              color: AppColors.biolumCyan,
-                              fontSize: 10,
-                              fontWeight: FontWeight.bold,
-                              letterSpacing: 2.0,
-                            ),
-                          ).animate().fade().slideX(),
-                        ],
-                      ),
-                      IconButton(
-                        icon: const Icon(Icons.tune_rounded, color: AppColors.textMediumEmphasis),
-                        onPressed: () {
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(builder: (context) => const SettingsScreen()),
-                          );
-                        },
-                      ).animate().fade(delay: 100.ms),
-                    ],
-                  ),
-                  
-                  const SizedBox(height: 8),
-                  Text(
-                    'Eco-Impact\nAnalytics',
-                    style: GoogleFonts.spaceGrotesk(
-                      color: AppColors.textHighEmphasis,
-                      fontSize: 32,
-                      fontWeight: FontWeight.w600,
-                      height: 1.1,
-                    ),
-                  ).animate().fade(delay: 100.ms).slideY(begin: 0.1, end: 0),
-                  
-                  const SizedBox(height: 40),
-                  
-                  const GlassCard(
-                    width: double.infinity,
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
+            child: RefreshIndicator(
+              onRefresh: _fetchUsage,
+              backgroundColor: AppColors.biolumCyan,
+              color: AppColors.background,
+              child: SingleChildScrollView(
+                padding: const EdgeInsets.symmetric(horizontal: 24.0, vertical: 32.0),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    // Header
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             Text(
-                              'TOTAL FOOTPRINT',
-                              style: TextStyle(color: AppColors.textMediumEmphasis, fontSize: 10, letterSpacing: 1.5),
-                            ),
-                            _PulsingDot(),
-                          ],
-                        ),
-                        SizedBox(height: 20),
-                        Row(
-                          crossAxisAlignment: CrossAxisAlignment.baseline,
-                          textBaseline: TextBaseline.alphabetic,
-                          children: [
-                            Text(
-                              '1.24',
-                              style: TextStyle(fontSize: 64, fontWeight: FontWeight.bold, fontFamily: 'monospace', letterSpacing: -3),
-                            ),
-                            SizedBox(width: 8),
-                            Text(
-                              'kg CO2e',
-                              style: TextStyle(color: AppColors.biolumCyan, fontSize: 16, fontWeight: FontWeight.w500),
+                              'SYSTEM ' + (_isLoading ? 'LOADING...' : 'OPTIMAL'),
+                              style: GoogleFonts.spaceGrotesk(
+                                color: AppColors.biolumCyan,
+                                fontSize: 10,
+                                fontWeight: FontWeight.bold,
+                                letterSpacing: 2.0,
+                              ),
                             ),
                           ],
                         ),
-                        SizedBox(height: 12),
-                        Text(
-                          '≈ 0.5 tree absorbed this year',
-                          style: TextStyle(color: AppColors.textMediumEmphasis, fontSize: 12),
+                        IconButton(
+                          icon: const Icon(Icons.tune_rounded, color: AppColors.textMediumEmphasis),
+                          onPressed: () => Navigator.push(context, MaterialPageRoute(builder: (context) => const SettingsScreen())),
                         ),
                       ],
                     ),
-                  ).animate().fade(delay: 200.ms).moveY(begin: 20, end: 0),
-                  
-                  const SizedBox(height: 20),
-                  
-                  Row(
-                    children: [
-                      Expanded(
-                        child: GlassCard(
-                          child: _buildMetric('WATER', '4.2', 'Liters', AppColors.plasmaBlue),
-                        ),
-                      ).animate().fade(delay: 300.ms).moveY(begin: 20, end: 0),
-                      const SizedBox(width: 16),
-                      Expanded(
-                        child: GlassCard(
-                          child: _buildMetric('COST', r'$12.4', 'USD', AppColors.toxicLime),
-                        ),
-                      ).animate().fade(delay: 400.ms).moveY(begin: 20, end: 0),
-                    ],
-                  ),
-                ],
+                    const SizedBox(height: 8),
+                    Text('Eco-Impact\nAnalytics', style: GoogleFonts.spaceGrotesk(color: AppColors.textHighEmphasis, fontSize: 32, fontWeight: FontWeight.w600, height: 1.1)),
+                    
+                    const SizedBox(height: 40),
+
+                    // CO2 Card
+                    GlassCard(
+                      width: double.infinity,
+                      child: _isLoading 
+                          ? const Center(child: CircularProgressIndicator())
+                          : Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          const Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [Text('TOTAL FOOTPRINT', style: TextStyle(color: AppColors.textMediumEmphasis, fontSize: 10, letterSpacing: 1.5)), _PulsingDot()]),
+                          const SizedBox(height: 20),
+                          Row(
+                            crossAxisAlignment: CrossAxisAlignment.baseline,
+                            textBaseline: TextBaseline.alphabetic,
+                            children: [
+                              Text(_totalCO2Kg.toStringAsFixed(2), style: const TextStyle(fontSize: 64, fontWeight: FontWeight.bold, fontFamily: 'monospace', letterSpacing: -3)),
+                              const SizedBox(width: 8),
+                              const Text('kg CO2e', style: TextStyle(color: AppColors.biolumCyan, fontSize: 16, fontWeight: FontWeight.w500)),
+                            ],
+                          ),
+                        ],
+                      ),
+                    ).animate().fade(delay: 200.ms).moveY(begin: 20, end: 0),
+                    
+                    const SizedBox(height: 20),
+
+                    // Water & Cost Cards
+                    Row(
+                      children: [
+                        Expanded(
+                          child: GlassCard(
+                            child: _isLoading 
+                                ? const Center(child: CircularProgressIndicator())
+                                : _buildMetric('WATER', _totalWaterL.toStringAsFixed(1), 'Liters', AppColors.plasmaBlue),
+                          ),
+                        ).animate().fade(delay: 300.ms).moveY(begin: 20, end: 0),
+                        const SizedBox(width: 16),
+                        Expanded(
+                          child: GlassCard(
+                            child: _isLoading 
+                                ? const Center(child: CircularProgressIndicator())
+                                : _buildMetric('COST', '\$${_totalCost.toStringAsFixed(2)}', 'USD', AppColors.toxicLime),
+                          ),
+                        ).animate().fade(delay: 400.ms).moveY(begin: 20, end: 0),
+                      ],
+                    ),
+                  ],
+                ),
               ),
             ),
           ),
@@ -168,20 +154,11 @@ class _DashboardScreenState extends State<DashboardScreen> {
 
   Widget _buildAnimatedBlob(Color color, double? top, double? right, double size, Duration duration, {double? left, double? bottom}) {
     return Positioned(
-      top: top,
-      right: right,
-      left: left,
-      bottom: bottom,
+      top: top, right: right, left: left, bottom: bottom,
       child: ImageFiltered(
         imageFilter: ImageFilter.blur(sigmaX: 80, sigmaY: 80),
-        child: Container(
-          width: size,
-          height: size,
-          decoration: BoxDecoration(shape: BoxShape.circle, color: color.withOpacity(0.12)),
-        ),
-      ).animate(onPlay: (c) => c.repeat(reverse: true))
-       .moveY(begin: 0, end: 30, duration: duration, curve: Curves.easeInOutSine)
-       .scale(begin: const Offset(1, 1), end: const Offset(1.1, 1.1), duration: duration),
+        child: Container(width: size, height: size, decoration: BoxDecoration(shape: BoxShape.circle, color: color.withOpacity(0.12))),
+      ).animate(onPlay: (c) => c.repeat(reverse: true)).moveY(begin: 0, end: 30, duration: duration, curve: Curves.easeInOutSine).scale(begin: const Offset(1, 1), end: const Offset(1.1, 1.1), duration: duration),
     );
   }
 
@@ -204,9 +181,6 @@ class _PulsingDot extends StatelessWidget {
   const _PulsingDot();
   @override
   Widget build(BuildContext context) {
-    return Container(
-      width: 6, height: 6,
-      decoration: const BoxDecoration(color: AppColors.toxicLime, shape: BoxShape.circle, boxShadow: [BoxShadow(color: AppColors.toxicLime, blurRadius: 4)]),
-    ).animate(onPlay: (c) => c.repeat(reverse: true)).fade(begin: 0.3, end: 1.0, duration: 1.seconds);
+    return Container(width: 6, height: 6, decoration: const BoxDecoration(color: AppColors.toxicLime, shape: BoxShape.circle, boxShadow: [BoxShadow(color: AppColors.toxicLime, blurRadius: 4)])).animate(onPlay: (c) => c.repeat(reverse: true)).fade(begin: 0.3, end: 1.0, duration: 1.seconds);
   }
 }
