@@ -9,5 +9,6 @@ class AppColors {
 
   static const Color textHighEmphasis = Colors.white;
   static const Color textMediumEmphasis = Color(0xFFAAAAAA);
+  static const Color textLowEmphasis = Color(0xFF666666);
   static const Color textDim = Color(0xFF666666);
 }

@@ -1,0 +1,118 @@
+Queue Gemini CLI – Eco‑AI Tracker (Version Ultra Complète)
+1. Analyse initiale ultra détaillée
+
+Scanner tous les fichiers Flutter, backend, assets, configs, scripts
+
+Détecter toutes les dépendances obsolètes / versions incompatibles
+
+Générer un diagramme complet des modules et dépendances
+
+Identifier toutes les zones à risque / tech debt / anti-patterns
+
+Reporter toutes les erreurs / warnings / risques de crash
+
+2. Correction de bugs et stabilisation
+
+Corriger tous les calculs CO₂, eau, coût et vérifier unités
+
+Optimiser la mémoire et le cache, éviter leaks et saturations
+
+Corriger problèmes UI : shaders, blurs, layers, FPS, scroll lag
+
+Vérifier compatibilité iOS/Android pour tous les écrans et widgets
+
+Détecter et corriger fuites réseau / appels API non sécurisés
+
+Corriger tous les warning Dart / Flutter / linter
+
+3. Ajout de nouvelles fonctionnalités – Phase 1
+
+Eco-Budget : seuils CO₂ / eau / USD avec notifications locales et push
+
+Comparateur CO₂ vs coût par modèle LLM
+
+Timeline dynamique avec visualisation des pics d’usage
+
+Widgets natifs interactifs pour écran d’accueil (iOS / Android)
+
+Offline-first : tout fonctionne sans réseau, sync automatique à la reconnexion
+
+4. Ajout de nouvelles fonctionnalités – Phase 2
+
+Mode simulation prédictif : évaluer CO₂ et coût avant exécution d’un prompt
+
+Export CSV / JSON / PDF de l’historique
+
+Mode “alertes intelligentes” : proposer modèles plus sobres automatiquement
+
+Tableau de bord “gamme avancée” : visualisations abstraites, Liquid Glass full dynamique
+
+Jauges interactives : clic → détails, couleurs dynamiques selon seuils
+
+5. Ajout de nouvelles fonctionnalités – Phase 3 (option futur)
+
+Mode multi-utilisateurs avec profils et quotas individuels
+
+IA interne pour recommandations d’optimisation de consommation tokens
+
+Mode “rapports automatiques” : envoie PDF ou email hebdo de l’usage
+
+Optimisation énergie : ajustement dynamique des shaders selon batterie / OLED
+
+6. Tests automatisés
+
+Unit tests pour tous les calculs et conversions
+
+Integration tests pour DB locale + API
+
+UI tests sur iOS / Android pour toutes les résolutions
+
+Performance tests : FPS, mémoire, temps de calcul, fluidité animations
+
+Génération automatique de rapport complet avec bugs / warnings / suggestions
+
+7. Vérifications globales périodiques (toutes les 5 prompts)
+
+Cohérence totale des données + intégrité DB
+
+Consommation mémoire et cache
+
+Fallback automatique Gemini (Pro → Flash)
+
+Vérification FPS / animations / shaders / blurs
+
+Audit complet de sécurité : clés API, TLS, stockage local
+
+8. Optimisations continues
+
+Refactoring complet pour lisibilité et maintenabilité
+
+Optimisation shaders, blurs et layers pour 60-120 FPS
+
+Nettoyage assets et fichiers inutilisés
+
+Amélioration continue des algos CO₂ / WUE / coût
+
+Ajout de logs détaillés pour suivi de performance et debugging
+
+9. Documentation et suivi
+
+README complet avec toutes les fonctionnalités et instructions
+
+Mini-journal de dev pour chaque action / fix / feature
+
+Commentaires clairs et détaillés dans le code
+
+Génération de changelog automatique
+
+10. Actions avancées / futur
+
+Suggestions de nouvelles features par Gemini basées sur usage historique
+
+Auto‑refacto régulier pour réduire tech debt
+
+Simulation de charges utilisateurs pour stress-test
+
+Monitoring des performances en continu
+
+Préparation à déploiement multi-plateformes / stores

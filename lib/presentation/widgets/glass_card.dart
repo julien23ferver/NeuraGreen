@@ -30,14 +30,14 @@ class GlassCard extends StatelessWidget {
           decoration: BoxDecoration(
             borderRadius: borderRadius,
             // 1. Le fond du verre (très subtil)
-            color: Colors.white.withOpacity(0.03),
+            color: Colors.white.withAlpha((255 * 0.03).round()),
             // 2. Un gradient de surface (reflet global)
             gradient: LinearGradient(
               begin: Alignment.topLeft,
               end: Alignment.bottomRight,
               colors: [
-                Colors.white.withOpacity(0.05),
-                Colors.white.withOpacity(0.01),
+                Colors.white.withAlpha((255 * 0.05).round()),
+                Colors.white.withAlpha((255 * 0.01).round()),
               ],
             ),
           ),
@@ -55,9 +55,9 @@ class GlassCard extends StatelessWidget {
                       end: Alignment.bottomRight,
                       stops: const [0.0, 0.4, 1.0],
                       colors: [
-                        Colors.white.withOpacity(0.3), // Lumière vive coin haut gauche
-                        Colors.white.withOpacity(0.05), // Transition
-                        Colors.white.withOpacity(0.0),  // Ombre totale coin bas droite
+                        Colors.white.withAlpha((255 * 0.3).round()), // Lumière vive coin haut gauche
+                        Colors.white.withAlpha((255 * 0.05).round()), // Transition
+                        Colors.white.withAlpha((255 * 0.0).round()),  // Ombre totale coin bas droite
                       ],
                     ),
                   ),
